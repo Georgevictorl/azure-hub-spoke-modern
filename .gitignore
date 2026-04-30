@@ -1,0 +1,10 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# VSCode
+.vscode/
+
+# Logs
+*.log

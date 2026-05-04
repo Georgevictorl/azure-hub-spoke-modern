@@ -1,28 +1,19 @@
 # Azure Modern Hub-Spoke Architecture
 
-> Enterprise-grade Azure Hub-Spoke architecture focused on cloud-native modernization, centralized security, private connectivity, and modern application delivery.
+> Enterprise-grade Microsoft Azure architecture demonstrating Hub-Spoke networking, centralized security, multi-spoke segmentation, and modern application delivery using Azure Front Door and WAF.
 
 ---
 
 # 📌 Overview
 
-This project demonstrates the implementation of a modern enterprise architecture in Microsoft Azure using:
+This project implements a modern multi-spoke Hub-Spoke architecture in Microsoft Azure, following enterprise design patterns.
 
-* Hub-Spoke Networking
-* Azure Firewall
-* Azure Bastion
-* Azure Front Door
-* Web Application Firewall (WAF)
-* Private Endpoints
-* Azure App Service
-* Azure Database for MySQL Flexible Server
-* Route Tables (UDR)
-* Network Security Groups (NSGs)
-* Private DNS Zones
-* VNet Peering
-* Cloud-native application architecture
+The environment simulates a secure, scalable, and production-ready cloud architecture with:
 
-The goal of this project was to simulate a secure and scalable enterprise environment following modern Azure architecture best practices.
+- Centralized security (Hub)
+- Multiple isolated workloads (Spokes)
+- Cloud-native application deployment (PaaS)
+- Secure global application publishing
 
 ---
 
@@ -30,97 +21,61 @@ The goal of this project was to simulate a secure and scalable enterprise enviro
 
 ## 🔹 Resource Groups
 
-| Resource Group | Purpose                       |
-| -------------- | ----------------------------- |
-| HEVNetRG1      | Hub Infrastructure            |
-| HEVNetRG2      | Spoke Application Environment |
+| Resource Group | Purpose |
+|---|---|
+| HEVNetRG1 | Hub Infrastructure (Shared Services & Security) |
+| HEVNetRG2 | Production Application (WordPress + Database) |
+| HEVNetRG3 | Development Environment |
 
 ---
 
 # 🌐 Hub-Spoke Topology
 
-## Hub Network
+## 🧭 Hub Network (HEVNet1)
 
-```plaintext
-HEVNet1
-10.7.0.0/20
-```
+Address space: 10.7.0.0/20
 
-### Hub Subnets
+### Subnets
 
-| Subnet                        | Address Range | Purpose              |
-| ----------------------------- | ------------- | -------------------- |
-| Management                    | 10.7.2.0/25   | Management resources |
-| AzureFirewallSubnet           | 10.7.1.0/26   | Azure Firewall       |
-| AzureFirewallManagementSubnet | 10.7.4.0/26   | Firewall management  |
-| AzureBastionSubnet            | 10.7.5.0/26   | Azure Bastion        |
+| Subnet | Purpose |
+|---|---|
+| Management | Administrative resources |
+| AzureFirewallSubnet | Azure Firewall |
+| AzureFirewallManagementSubnet | Firewall management |
+| AzureBastionSubnet | Secure access |
 
 ---
 
-## Spoke Network
+## 🚀 Spoke - Application (Production)
 
-The Spoke environment hosts the cloud-native WordPress application and database services.
+This spoke hosts a modern cloud-native application.
 
 ### Components
 
-* Azure App Service
-* Azure Database for MySQL Flexible Server
-* Azure Front Door
-* Web Application Firewall (WAF)
-* Private Endpoints
-* NSGs
-* Route Tables
+- Azure App Service (WordPress)
+- Azure Database for MySQL Flexible Server
+- Azure Front Door
+- Web Application Firewall (WAF)
+- NSG and Route Tables
+
+### Why PaaS?
+
+- No VM management
+- Built-in scalability
+- Lower operational overhead
 
 ---
 
-# 🖥️ Virtual Machine
+## 🧪 Spoke - Development
 
-## Management VM
+This spoke represents a non-production environment.
 
-| VM    | Purpose                             |
-| ----- | ----------------------------------- |
-| HEVM1 | Management and connectivity testing |
+### Components
 
-### Features
-
-* Ubuntu Server 24.04
-* SSH access
-* DNS resolution testing
-* MySQL connectivity testing
-* Bastion access
-
----
-
-# 🚀 Application Architecture
-
-## WordPress on Azure App Service
-
-The application layer uses Azure App Service instead of traditional IIS virtual machines.
-
-### Benefits
-
-* PaaS architecture
-* Managed scaling
-* Reduced operational overhead
-* Automatic patching
-* Improved availability
-* Cloud-native modernization
-
----
-
-# 🗄️ Database Layer
-
-## Azure Database for MySQL Flexible Server
-
-The database layer was implemented using Azure Database for MySQL Flexible Server.
-
-### Features
-
-* Managed database service
-* Private connectivity
-* Integrated backup
-* High availability capabilities
-* Reduced infrastructure management
+- Virtual Machine (HEVM3)
+- Dedicated VNet
+- NSG
+- Route Tables
 
 ---
 
@@ -128,55 +83,36 @@ The database layer was implemented using Azure Database for MySQL Flexible Serve
 
 ## Azure Firewall
 
-Centralized traffic inspection and filtering.
+Central security layer responsible for:
 
-### Features
-
-* Centralized security
-* Traffic inspection
-* East-West traffic control
-* North-South traffic control
-* Network rule collections
-* Secure routing
-
----
-
-## Azure Bastion
-
-Secure browser-based access to virtual machines.
-
-### Benefits
-
-* No public SSH exposure
-* Zero Trust approach
-* Secure management access
-* Reduced attack surface
+- Traffic inspection
+- Network rules
+- Outbound control
+- Forced routing
 
 ---
 
 ## Web Application Firewall (WAF)
 
-Integrated with Azure Front Door.
-
-### Features
-
-* Layer 7 protection
-* OWASP protection
-* Global edge security
-* HTTP/HTTPS inspection
+- Protection against OWASP Top 10
+- Layer 7 filtering
+- Integrated with Front Door
 
 ---
 
-## Network Security Groups (NSGs)
+## Network Security Groups (NSG)
 
-Implemented to restrict communication between subnets and services.
+- Traffic segmentation
+- Controlled access between tiers
+- Default deny model
 
-### Security Controls
+---
 
-* Controlled MySQL access
-* Explicit allow rules
-* Deny all inbound strategy
-* Segmentation between tiers
+## Azure Bastion
+
+- Secure SSH/RDP access
+- No public IP exposure
+- Browser-based connection
 
 ---
 
@@ -184,282 +120,212 @@ Implemented to restrict communication between subnets and services.
 
 ## VNet Peering
 
-Private connectivity between Hub and Spoke VNets.
+- Hub ↔ Spoke-App
+- Hub ↔ Spoke-Dev
 
-### Benefits
+Benefits:
 
-* Low latency
-* Microsoft backbone network
-* Secure communication
-* Simplified network topology
+- Private communication
+- Low latency
+- High performance
 
 ---
 
-# 🧭 Routing
+# 🧭 Routing Strategy
 
 ## User Defined Routes (UDR)
 
-Traffic routing through Azure Firewall.
+All traffic is routed through Azure Firewall:
 
-### Example
-
-```plaintext
 0.0.0.0/0 → Azure Firewall
-```
 
-### Purpose
+Purpose:
 
-* Centralized inspection
-* Forced tunneling
-* Traffic control
-* Security enforcement
+- Centralized inspection
+- Traffic visibility
+- Security enforcement
 
 ---
 
-# 🧠 Private DNS
+# 🌐 Application Delivery
 
-## Azure Private DNS Zones
+## Azure Front Door (Premium)
 
-Used for internal name resolution between services.
-
-### Features
-
-* Private database resolution
-* Internal-only communication
-* Automatic registration
-* Secure service discovery
+- Global entry point
+- Load balancing
+- SSL offload
+- WAF integration
 
 ---
 
-# 🌐 Azure Front Door
+# 🖥️ Application Architecture
 
-Azure Front Door was used as the global entry point for the application.
+## WordPress (App Service)
 
-### Features
-
-* Global load balancing
-* SSL offloading
-* Edge security
-* WAF integration
-* Improved user latency
-* Modern application delivery
+- Fully managed PaaS
+- High availability
+- Auto scaling
 
 ---
 
-# 🔒 Private Endpoints
+## Database Layer
 
-Private Endpoints were implemented to eliminate public exposure of critical services.
+### Azure Database for MySQL Flexible Server
 
-### Benefits
-
-* Private connectivity
-* Reduced attack surface
-* Secure PaaS integration
-* Internal-only communication
+- Managed database
+- Automated backups
+- High availability
 
 ---
 
-# 🚦 Application Flow
+# 🚦 End-to-End Traffic Flow
 
-```plaintext
-Internet
-   ↓
-Azure Front Door + WAF
-   ↓
-Azure Firewall
-   ↓
-Azure App Service
-   ↓
-Private Endpoint
-   ↓
-Azure Database for MySQL
-```
+Internet  
+↓  
+Azure Front Door  
+↓  
+Web Application Firewall (WAF)  
+↓  
+Azure Firewall  
+↓  
+App Service (WordPress)  
+↓  
+MySQL Flexible Server  
+
+---
+
+# 📸 Architecture Evidence
+
+## Resource Groups
+![Resource Groups](Screenshots/resource-groups.png)
+
+---
+
+## Hub Network
+![Hub Topology](Screenshots/hub-topology.png)
+
+---
+
+## Spoke - Application
+![Spoke App](Screenshots/spoke-app-topology.png)
+
+---
+
+## Spoke - Development
+![Spoke Dev](Screenshots/spoke-dev-topology.png)
+
+---
+
+## VNet Peering
+![Peering](Screenshots/vnet-peering-hub.png)
+
+---
+
+## Azure Firewall
+![Firewall Rules](Screenshots/azure-firewall-rules.png)
+
+---
+
+## Routing - App
+![App Routes](Screenshots/routes-apprt.png)
+
+---
+
+## Routing - Dev
+![Dev Routes](Screenshots/routes-devrt.png)
+
+---
+
+## Azure Front Door
+![Front Door](Screenshots/frontdoor-overview.png)
+
+---
+
+## Web Application Firewall
+![WAF](Screenshots/waf-policy.png)
+
+---
+
+## Azure Bastion
+![Bastion](Screenshots/bastion-overview.png)
+
+---
+
+## Application Running
+![Application](Screenshots/application-running.png)
 
 ---
 
 # 📚 Concepts Practiced
 
-This project covered:
-
-* Hub-Spoke Architecture
-* Cloud-native modernization
-* Azure App Service
-* Azure Front Door
-* Web Application Firewall
-* Private Endpoints
-* Azure Firewall
-* Azure Bastion
-* NSGs
-* Route Tables
-* VNet Peering
-* Private DNS
-* PaaS Architecture
-* Zero Trust concepts
-* Secure application delivery
-* Azure networking
-* Cloud security
+- Hub-Spoke Architecture  
+- Multi-Spoke Design  
+- Azure Networking  
+- Azure Firewall  
+- Web Application Firewall  
+- Azure Front Door  
+- NSG  
+- Route Tables (UDR)  
+- VNet Peering  
+- Azure Bastion  
+- PaaS Architecture  
 
 ---
 
 # 💰 FinOps Considerations
 
-## Hidden Costs Identified
+Key cost drivers:
 
-* Azure Firewall hourly cost
-* Bastion hourly cost
-* Front Door requests and bandwidth
-* WAF policy charges
-* VNet peering traffic
-* Private Endpoint charges
-* Log Analytics ingestion
-* MySQL backup storage
-* Public IP charges
-
----
-
-# ⚖️ Architecture Comparison
-
-| Traditional Architecture | Modern Architecture   |
-| ------------------------ | --------------------- |
-| IIS on VM                | Azure App Service     |
-| SQL Server on VM         | MySQL Flexible Server |
-| Internal Load Balancer   | Azure Front Door      |
-| Public DB access         | Private Endpoint      |
-| Manual patching          | Managed services      |
-| VM-centric               | PaaS / Cloud-native   |
+- Azure Firewall  
+- Front Door (requests + data transfer)  
+- WAF Policy  
+- Bastion  
+- MySQL Flexible Server  
+- App Service Plan  
+- VNet Peering traffic  
 
 ---
 
 # 🎯 Learning Objectives
 
-This project was designed to:
-
-* Learn modern Azure architecture
-* Understand cloud-native services
-* Implement secure networking
-* Practice enterprise security concepts
-* Simulate real-world environments
-* Prepare for Azure Solutions Architect scenarios
-* Understand modernization strategies
-* Practice FinOps analysis
+- Design enterprise Azure architecture  
+- Implement Hub-Spoke networking  
+- Apply centralized security  
+- Deploy modern applications  
+- Prepare for AZ-305  
 
 ---
 
 # 🛠️ Technologies Used
 
-* Microsoft Azure
-* Azure Virtual Network
-* Azure Firewall
-* Azure Bastion
-* Azure Front Door
-* Web Application Firewall (WAF)
-* Azure App Service
-* Azure Database for MySQL Flexible Server
-* Azure NSG
-* Azure Route Tables
-* Azure Private DNS
-* Private Endpoints
-* Ubuntu Server
-* WordPress
-* SSH
-* Terraform
-
----
-
-# 📸 Screenshots
-
-The following screenshots will be added:
-
-* Resource Groups
-* Hub topology
-* Spoke topology
-* VNet Peering
-* Azure Firewall Policy
-* Route Tables
-* NSG Rules
-* Azure Front Door
-* WAF Policy
-* Private Endpoint
-* App Service Networking
-* MySQL Private DNS
-* WordPress Application
-* Bastion Overview
-
----
-
-# 📦 Infrastructure as Code
-
-## Terraform
-
-Terraform templates will be included for:
-
-* Resource Groups
-* VNets
-* Subnets
-* NSGs
-* Route Tables
-* Azure Firewall
-* Bastion
-* App Service
-* Front Door
-* WAF
-* Private Endpoints
-
----
-
-# 🔄 Future Improvements
-
-Planned future improvements:
-
-* CI/CD pipelines
-* GitHub Actions
-* Azure DevOps
-* AKS migration
-* Application Gateway
-* Defender for Cloud
-* Azure Monitor
-* Log Analytics
-* Sentinel integration
-* Terraform modules
-* Landing Zones
-* CAF implementation
+- Microsoft Azure  
+- Azure Virtual Network  
+- Azure Firewall  
+- Azure Bastion  
+- Azure Front Door  
+- Web Application Firewall  
+- Azure App Service  
+- Azure Database for MySQL  
+- NSG  
+- Route Tables  
 
 ---
 
 # 👨‍💻 Author
 
-Project developed for advanced studies in:
+Project developed for:
 
-* Azure Architecture
-* Cloud Engineering
-* Cloud Security
-* FinOps
-* Application Modernization
-* Azure Networking
-* AZ-305 Preparation
-
----
-
-# 📌 Notes
-
-This project was created for educational and laboratory purposes.
-
-The architecture demonstrates a transition from traditional infrastructure-based applications to modern cloud-native Azure services.
-
-The environment was intentionally designed following enterprise-grade security and networking best practices.
+- Azure Architecture  
+- Cloud Engineering  
+- Security  
+- FinOps  
+- AZ-305 Preparation  
 
 ---
 
 # ⭐ Key Takeaways
 
-This project demonstrates practical experience with:
-
-* Enterprise networking
-* Hub-Spoke topology
-* Cloud-native modernization
-* Azure security services
-* PaaS adoption
-* Private connectivity
-* Secure application publishing
-* Zero Trust principles
-* Modern Azure architecture
+- Hub-Spoke architecture scales efficiently  
+- Centralized security improves governance  
+- PaaS reduces operational complexity  
+- Front Door + WAF enables secure global access  

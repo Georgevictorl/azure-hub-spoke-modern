@@ -197,62 +197,62 @@ MySQL Flexible Server
 # 📸 Architecture Evidence
 
 ## Resource Groups
-![Resource Groups](Screenshots/resource-groups.png)
+![Resource Groups](screenshots/resource-groups.png)
 
 ---
 
 ## Hub Network
-![Hub Topology](Screenshots/hub-topology.png)
+![Hub Topology](screenshots/hub-topology.png)
 
 ---
 
 ## Spoke - Application
-![Spoke App](Screenshots/spoke-app-topology.png)
+![Spoke App](screenshots/spoke-app-topology.png)
 
 ---
 
 ## Spoke - Development
-![Spoke Dev](Screenshots/spoke-dev-topology.png)
+![Spoke Dev](screenshots/spoke-dev-topology.png)
 
 ---
 
 ## VNet Peering
-![Peering](Screenshots/vnet-peering-hub.png)
+![Peering](screenshots/vnet-peering-hub.png)
 
 ---
 
 ## Azure Firewall
-![Firewall Rules](Screenshots/azure-firewall-rules.png)
+![Firewall Rules](screenshots/azure-firewall-rules.png)
 
 ---
 
 ## Routing - App
-![App Routes](Screenshots/routes-apprt.png)
+![App Routes](screenshots/routes-apprt.png)
 
 ---
 
 ## Routing - Dev
-![Dev Routes](Screenshots/routes-devrt.png)
+![Dev Routes](screenshots/routes-devrt.png)
 
 ---
 
 ## Azure Front Door
-![Front Door](Screenshots/frontdoor-overview.png)
+![Front Door](screenshots/frontdoor-overview.png)
 
 ---
 
 ## Web Application Firewall
-![WAF](Screenshots/waf-policy.png)
+![WAF](screenshots/waf-policy.png)
 
 ---
 
 ## Azure Bastion
-![Bastion](Screenshots/bastion-overview.png)
+![Bastion](screenshots/bastion-overview.png)
 
 ---
 
 ## Application Running
-![Application](Screenshots/application-running.png)
+![Application](screenshots/application-running.png)
 
 ---
 
